@@ -1,0 +1,43 @@
+---
+description: Rules for working with requirements documents
+globs: docs/requirements/**
+---
+
+# Requirements Authoring Rules
+
+When working in the requirements directory, follow these rules:
+
+## Format Requirements
+- Use YAML format exclusively for requirements documents
+- Follow the schema in `docs/requirements/requirements-template.yaml`
+- Each requirement MUST have a unique ID: `REQ-XXXX` (4 digits, zero-padded)
+
+## Requirement Quality Checklist
+- [ ] Uses "shall" for mandatory behavior
+- [ ] Is testable with measurable criteria
+- [ ] Avoids ambiguous words (fast, robust, user-friendly) unless quantified
+- [ ] One idea per requirement (no conjunctions creating compound requirements)
+- [ ] Includes rationale explaining why this requirement exists
+- [ ] Specifies verification method: Test | Analysis | Inspection | Demonstration
+- [ ] Has priority: Must | Should | Could
+
+## Required Fields
+```yaml
+- id: "REQ-XXXX"
+  title: "<short descriptive title>"
+  statement: "The system shall ..."
+  rationale: "<business/technical justification>"
+  verification_method: "Test"
+  priority: "Must"
+  derived_from: []  # UC-xxxx, PRD references
+  notes: ""
+```
+
+## After Creating/Editing Requirements
+1. Run: `python tools/traceability/check_traceability.py --docs docs --tests tests`
+2. Ensure a corresponding design doc will reference this requirement
+3. Ensure test cases will be written to verify this requirement
+
+## Related Agents
+- Use `agents/requirements-author.md` for creating new requirements
+- Use `agents/requirements-reviewer.md` for reviewing requirements quality

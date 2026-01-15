@@ -1,0 +1,58 @@
+---
+description: Rules for C++ source code
+globs: ["**/*.cpp", "**/*.cc", "**/*.cxx", "**/*.h", "**/*.hpp"]
+alwaysApply: false
+---
+
+# C++ Source Code Rules
+
+## Modern C++ Standards
+- Prefer C++17 or newer features
+- Use smart pointers (`std::unique_ptr`, `std::shared_ptr`) over raw pointers
+- Use RAII for resource management
+- Prefer `std::string_view` for read-only string parameters
+- Use `std::optional` for optional values
+
+## Memory Safety
+- Avoid raw `new`/`delete` - use smart pointers or containers
+- No manual memory management in application code
+- Use `std::span` for array views (C++20)
+- Prefer value semantics where reasonable
+
+## Error Handling
+- Use exceptions for exceptional conditions
+- Use `std::expected` or `std::optional` for expected failures (C++23/17)
+- Document exception specifications
+- Use RAII to ensure cleanup on exceptions
+
+## Naming Conventions
+- Classes/Structs: `PascalCase`
+- Functions/Methods: `snake_case` or `camelCase` (be consistent)
+- Constants: `kConstantName` or `CONSTANT_NAME`
+- Private members: `member_` or `m_member`
+
+## Header Guidelines
+- Use `#pragma once` or include guards
+- Forward declare where possible
+- Include what you use (IWYU)
+
+## Testing
+- Use GoogleTest, Catch2, or doctest
+- Include requirement references in test comments
+- Keep tests deterministic
+
+```cpp
+TEST(FeatureTest, HandlesValidInput) {
+    // REQ-0001: System shall process valid input
+    auto result = ProcessInput(valid_input);
+    EXPECT_TRUE(result.is_ok());
+}
+```
+
+## Build System
+- Use CMake or similar modern build system
+- Enable warnings: `-Wall -Wextra -Wpedantic`
+- Consider: `-Werror` in CI
+
+## Related Agents
+- Use `agents/cpp-quality-enforcer.md` for quality review

@@ -1,0 +1,67 @@
+---
+description: Rules for working with test files
+globs: tests/**
+---
+
+# Test File Rules
+
+When working in the tests directory, follow TDD principles:
+
+## TDD Workflow (Red → Green → Refactor)
+1. **Red**: Write a failing test that describes desired behavior
+2. **Green**: Write minimal code to make the test pass
+3. **Refactor**: Improve code quality while keeping tests green
+
+## Traceability Requirements
+- Every test file MUST reference at least one `REQ-xxxx` in comments or docstrings
+- Include requirement references in test docstrings or as inline comments
+
+### Python Example
+```python
+def test_user_can_login():
+    """Verify user authentication flow.
+    
+    Traces to: REQ-0001
+    """
+    # Test implementation
+    pass
+
+def test_invalid_credentials_rejected():
+    # REQ-0001, REQ-0002
+    pass
+```
+
+### C++ Example
+```cpp
+TEST(AuthTest, ValidCredentialsSucceed) {
+    // REQ-0001
+    // Test implementation
+}
+```
+
+## Test Quality Checklist
+- [ ] Tests are deterministic (no flaky timing, no uncontrolled randomness)
+- [ ] Tests assert behavior, not implementation details
+- [ ] Tests cover: happy path, boundaries, invalid inputs, error cases
+- [ ] Tests are hermetic (no external dependencies)
+- [ ] Tests are fast (unit tests < 1s each)
+- [ ] Each test references requirement(s) it verifies
+
+## Test Categories
+- **Unit tests**: Test single units in isolation, mock dependencies
+- **Integration tests**: Test component interactions
+- **System tests**: End-to-end behavior validation
+
+## Naming Conventions
+- Python: `test_<feature>_<scenario>.py` or `test_<module>.py`
+- Test functions: `test_<behavior>_<expected_outcome>`
+
+## After Writing Tests
+1. Run tests: `pytest` (Python) or your C++ test runner
+2. Check coverage: ensure requirements are covered
+3. Run traceability: `python tools/traceability/check_traceability.py --docs docs --tests tests`
+
+## Related Agents
+- Use `agents/tdd-coach.md` for TDD workflow guidance
+- Use `agents/test-generator.md` for generating tests from requirements
+- Use `agents/test-reviewer.md` for test quality review

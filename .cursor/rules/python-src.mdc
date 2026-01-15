@@ -1,0 +1,54 @@
+---
+description: Rules for Python source code
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python Source Code Rules
+
+## Code Style
+- Follow ruff configuration in `pyproject.toml`
+- Use type annotations for all function signatures
+- Line length: 100 characters max
+- Use `from __future__ import annotations` for forward references
+
+## Type Annotations
+```python
+from __future__ import annotations
+
+def process_data(items: list[str], config: Config | None = None) -> Result:
+    """Process items according to configuration.
+    
+    Args:
+        items: List of items to process
+        config: Optional configuration, uses defaults if None
+        
+    Returns:
+        Processing result with status and output
+    """
+    pass
+```
+
+## Error Handling
+- Use explicit exception types, not bare `except:`
+- Document exceptions in docstrings
+- Prefer returning Result types over exceptions for expected failures
+
+## Imports
+- Group imports: stdlib → third-party → local
+- Use absolute imports
+- Let ruff sort imports (isort rules enabled)
+
+## Testing
+- All public functions should be testable
+- Avoid global state that makes testing difficult
+- Use dependency injection for external resources
+
+## Before Committing
+1. Format: `ruff format .`
+2. Lint: `ruff check .`
+3. Test: `pytest`
+4. Type check (if using mypy): `mypy .`
+
+## Related Agents
+- Use `agents/python-quality-enforcer.md` for quality review
