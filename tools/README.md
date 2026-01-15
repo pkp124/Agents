@@ -64,6 +64,24 @@ When adding new tools:
 5. Update this README
 6. Add tests in `tests/`
 
+## Git Hooks
+
+Pre-commit hooks enforce TDD + V-model practices locally before commits.
+
+### Install Hooks
+```bash
+./tools/hooks/install-hooks.sh
+```
+
+### What's Checked
+- Python linting and formatting (ruff)
+- Traceability (REQ↔DES↔TEST links)
+- Requirement quality validation
+- Test files have REQ references
+- Design docs have "Traces to" section
+
+See `tools/hooks/README.md` for details.
+
 ## Integration with CI
 
 The GitHub Actions workflow in `.github/workflows/quality.yml` runs:

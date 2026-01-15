@@ -1,0 +1,102 @@
+# Pre-commit hooks for TDD + V-model enforcement
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Python code quality
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+
+  # Local hooks for TDD/V-model enforcement
+  - repo: local
+    hooks:
+      # Traceability check - ensures REQ↔DES↔TEST links
+      - id: traceability-check
+        name: Traceability Check (REQ↔DES↔TEST)
+        entry: python3 tools/traceability/check_traceability.py --docs docs --tests tests
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [commit]
+
+      # Requirement quality validation
+      - id: validate-requirements
+        name: Validate Requirements Quality
+        entry: python3 tools/traceability/validate_requirements.py
+        language: system
+        pass_filenames: false
+        files: ^docs/requirements/.*\.(yaml|yml)$
+        stages: [commit]
+
+      # Ensure tests have requirement references
+      - id: test-traceability
+        name: Check Test Files Reference Requirements
+        entry: python3 -c "
+import sys, re
+from pathlib import Path
+
+test_files = [f for f in sys.argv[1:] if f.startswith('tests/') and f.endswith('.py')]
+missing = []
+for f in test_files:
+    content = Path(f).read_text()
+    if not re.search(r'REQ-\d{4}', content):
+        missing.append(f)
+if missing:
+    print('ERROR: Test files missing REQ-xxxx references:')
+    for f in missing:
+        print(f'  - {f}')
+    print('Add requirement references in comments or docstrings.')
+    sys.exit(1)
+"
+        language: system
+        files: ^tests/.*\.py$
+        stages: [commit]
+
+      # Ensure design docs have Traces to section
+      - id: design-traceability
+        name: Check Design Docs Have Traces Section
+        entry: python3 -c "
+import sys, re
+from pathlib import Path
+
+design_files = [f for f in sys.argv[1:] if f.startswith('docs/design/') and f.endswith('.md')]
+missing = []
+for f in design_files:
+    if 'template' in f.lower():
+        continue
+    content = Path(f).read_text()
+    if not re.search(r'[Tt]races?\s*[Tt]o', content):
+        missing.append(f)
+if missing:
+    print('ERROR: Design docs missing \"Traces to\" section:')
+    for f in missing:
+        print(f'  - {f}')
+    sys.exit(1)
+"
+        language: system
+        files: ^docs/design/.*\.md$
+        stages: [commit]
+
+      # Pytest (optional - can be slow)
+      # Uncomment to run tests on every commit
+      # - id: pytest
+      #   name: Run Tests
+      #   entry: pytest --tb=short -q
+      #   language: system
+      #   pass_filenames: false
+      #   always_run: true
+      #   stages: [commit]

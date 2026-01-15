@@ -1,0 +1,109 @@
+#!/bin/bash
+# Manual pre-commit script (alternative to pre-commit framework)
+# Copy to .git/hooks/pre-commit and make executable
+#
+# Usage: cp tools/hooks/pre-commit-manual .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+FAILED=0
+
+# 1. Python linting (if ruff is available)
+if command -v ruff &> /dev/null; then
+    echo -n "Checking Python linting... "
+    if ruff check . --quiet; then
+        echo -e "${GREEN}✓${NC}"
+    else
+        echo -e "${RED}✗${NC}"
+        FAILED=1
+    fi
+else
+    echo -e "${YELLOW}Skipping ruff (not installed)${NC}"
+fi
+
+# 2. Python formatting
+if command -v ruff &> /dev/null; then
+    echo -n "Checking Python formatting... "
+    if ruff format --check . --quiet 2>/dev/null; then
+        echo -e "${GREEN}✓${NC}"
+    else
+        echo -e "${RED}✗${NC}"
+        FAILED=1
+    fi
+fi
+
+# 3. Traceability check
+echo -n "Checking traceability (REQ↔DES↔TEST)... "
+if python3 tools/traceability/check_traceability.py --docs docs --tests tests > /dev/null 2>&1; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${RED}✗${NC}"
+    echo "Run: python3 tools/traceability/check_traceability.py --docs docs --tests tests"
+    FAILED=1
+fi
+
+# 4. Requirement validation
+echo -n "Validating requirements quality... "
+if python3 tools/traceability/validate_requirements.py > /dev/null 2>&1; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${YELLOW}⚠ (warnings)${NC}"
+    # Don't fail on warnings, just notify
+fi
+
+# 5. Check staged test files have REQ references
+echo -n "Checking test files have REQ references... "
+STAGED_TESTS=$(git diff --cached --name-only --diff-filter=ACM | grep '^tests/.*\.py$' || true)
+MISSING_REQ=""
+for file in $STAGED_TESTS; do
+    if ! grep -q 'REQ-[0-9]\{4\}' "$file" 2>/dev/null; then
+        MISSING_REQ="$MISSING_REQ $file"
+    fi
+done
+if [ -z "$MISSING_REQ" ]; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${RED}✗${NC}"
+    echo "Test files missing REQ-xxxx references:"
+    for f in $MISSING_REQ; do
+        echo "  - $f"
+    done
+    FAILED=1
+fi
+
+# 6. Check staged design docs have Traces section
+echo -n "Checking design docs have Traces section... "
+STAGED_DESIGNS=$(git diff --cached --name-only --diff-filter=ACM | grep '^docs/design/.*\.md$' | grep -v template || true)
+MISSING_TRACES=""
+for file in $STAGED_DESIGNS; do
+    if ! grep -qi 'traces\s*to' "$file" 2>/dev/null; then
+        MISSING_TRACES="$MISSING_TRACES $file"
+    fi
+done
+if [ -z "$MISSING_TRACES" ]; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${RED}✗${NC}"
+    echo "Design docs missing 'Traces to' section:"
+    for f in $MISSING_TRACES; do
+        echo "  - $f"
+    done
+    FAILED=1
+fi
+
+echo ""
+if [ $FAILED -eq 1 ]; then
+    echo -e "${RED}Pre-commit checks failed!${NC}"
+    echo "Fix the issues above or use 'git commit --no-verify' to skip."
+    exit 1
+else
+    echo -e "${GREEN}All pre-commit checks passed!${NC}"
+fi

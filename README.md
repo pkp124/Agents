@@ -185,6 +185,30 @@ python tools/traceability/validate_requirements.py
 4. Run traceability check
 ```
 
+## Pre-Commit Hooks
+
+Install git hooks to enforce TDD + V-model practices before every commit:
+
+```bash
+# Install hooks
+./tools/hooks/install-hooks.sh
+
+# Or manually
+pip install pre-commit && pre-commit install
+```
+
+### What Gets Checked Automatically
+
+| Check | Description |
+|-------|-------------|
+| Ruff lint/format | Python code quality |
+| Traceability | REQ↔DES↔TEST links complete |
+| Requirement validation | Quality of requirement statements |
+| Test REQ references | Tests must reference REQ-xxxx |
+| Design traces | Design docs must have "Traces to" |
+
+See `tools/hooks/README.md` for details.
+
 ## CI Integration
 
 The GitHub Actions workflow (`.github/workflows/quality.yml`) runs:
