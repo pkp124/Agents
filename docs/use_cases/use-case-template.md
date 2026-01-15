@@ -1,0 +1,33 @@
+# Use Case: <Name>
+
+## UC-0001: <short title>
+
+### Primary actor
+- ...
+
+### Stakeholders and interests
+- ...
+
+### Preconditions
+- ...
+
+### Trigger
+- ...
+
+### Main success scenario
+1. ...
+2. ...
+
+### Extensions / alternate flows
+- **A1**: ...
+- **E1 (Failure)**: ...
+
+### Postconditions
+- ...
+
+### Linked requirements
+- `REQ-XXXX`
+
+### Open questions
+- ...
+
