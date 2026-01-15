@@ -1,0 +1,77 @@
+schema_version: 1
+feature: "MathUtils Library"
+
+context:
+  summary: |
+    The MathUtils library provides basic arithmetic and statistical operations
+    for numerical computing. It is designed for integration into larger systems
+    requiring reliable mathematical calculations.
+  stakeholders:
+    - role: Developer
+      needs:
+        - Reliable arithmetic operations
+        - Clear error handling for edge cases
+        - Modern C++ API with type safety
+  assumptions:
+    - Input values are within IEEE 754 double precision range
+    - Users handle floating-point precision limitations appropriately
+  constraints:
+    - Must compile with C++17 or later
+    - Must be header-only compatible for simple integration
+
+definitions:
+  - term: "IEEE 754"
+    definition: "Standard for floating-point arithmetic"
+  - term: "nullopt"
+    definition: "Empty optional value indicating no result"
+
+requirements:
+  - id: "REQ-0001"
+    title: "Basic Arithmetic Operations"
+    statement: "The system shall provide basic arithmetic operations including addition, subtraction, multiplication, and division for double-precision floating-point numbers."
+    rationale: "Core functionality needed for mathematical calculations."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: []
+    depends_on: []
+    notes: "All operations except division are noexcept."
+
+  - id: "REQ-0002"
+    title: "Division by Zero Handling"
+    statement: "The system shall throw a std::invalid_argument exception when division by zero is attempted."
+    rationale: "Division by zero is undefined and must be explicitly handled to prevent undefined behavior."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: ["REQ-0001"]
+    depends_on: ["REQ-0001"]
+    notes: "Exception provides clear error message."
+
+  - id: "REQ-0003"
+    title: "Absolute Value Operation"
+    statement: "The system shall provide an absolute value operation that returns the non-negative magnitude of a number."
+    rationale: "Common mathematical operation needed for distance and magnitude calculations."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: []
+    depends_on: []
+    notes: ""
+
+  - id: "REQ-0004"
+    title: "Statistical Operations"
+    statement: "The system shall provide basic statistical operations including mean, sum, minimum, maximum, and range for collections of double-precision floating-point numbers."
+    rationale: "Statistical analysis is a common requirement for data processing applications."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: []
+    depends_on: []
+    notes: "Operations accept std::vector<double> as input."
+
+  - id: "REQ-0005"
+    title: "Empty Dataset Handling"
+    statement: "The system shall return std::nullopt when statistical operations are performed on empty datasets, except for sum which shall return 0."
+    rationale: "Empty datasets have no meaningful mean/min/max values; sum of nothing is mathematically zero."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: ["REQ-0004"]
+    depends_on: ["REQ-0004"]
+    notes: "Uses std::optional for safe null handling."

@@ -1,0 +1,209 @@
+# GitLab CI configuration for MathUtils C++ project
+# Implements TDD + V-model CI pipeline
+
+stages:
+  - lint
+  - build
+  - test
+  - traceability
+  - package
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  CMAKE_BUILD_PARALLEL_LEVEL: "4"
+
+# ============================================================================
+# LINT STAGE - Code quality checks
+# ============================================================================
+
+clang-format:
+  stage: lint
+  image: silkeh/clang:17
+  script:
+    - find src include tests -name '*.cpp' -o -name '*.hpp' -o -name '*.h' | xargs clang-format --dry-run --Werror
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+cppcheck:
+  stage: lint
+  image: neszt/cppcheck-docker:latest
+  script:
+    - cppcheck --enable=all --error-exitcode=1 --suppress=missingIncludeSystem src/ include/
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+# ============================================================================
+# BUILD STAGE - Compile the project
+# ============================================================================
+
+.build_template: &build_template
+  stage: build
+  script:
+    - cmake --preset ci
+    - cmake --build --preset ci
+  artifacts:
+    paths:
+      - build/
+    expire_in: 1 hour
+
+build:gcc:
+  <<: *build_template
+  image: gcc:13
+  before_script:
+    - apt-get update && apt-get install -y cmake
+
+build:clang:
+  <<: *build_template
+  image: silkeh/clang:17
+  before_script:
+    - apt-get update && apt-get install -y cmake
+
+# ============================================================================
+# TEST STAGE - Run tests with CTest
+# ============================================================================
+
+.test_template: &test_template
+  stage: test
+  script:
+    - ctest --preset ci --output-on-failure
+  artifacts:
+    reports:
+      junit: build/ci/test-results.xml
+    when: always
+
+test:gcc:
+  <<: *test_template
+  image: gcc:13
+  needs: ["build:gcc"]
+  before_script:
+    - apt-get update && apt-get install -y cmake
+
+test:clang:
+  <<: *test_template
+  image: silkeh/clang:17
+  needs: ["build:clang"]
+  before_script:
+    - apt-get update && apt-get install -y cmake
+
+# ============================================================================
+# TRACEABILITY STAGE - V-model enforcement
+# ============================================================================
+
+traceability:check:
+  stage: traceability
+  image: python:3.11-slim
+  needs: ["test:gcc"]
+  script:
+    - echo "Checking requirement traceability (REQ↔DES↔TEST)..."
+    - |
+      # Check that all REQ-xxxx in requirements are referenced in design
+      echo "=== Requirements defined ==="
+      grep -rhoP 'REQ-\d{4}' docs/requirements/ | sort -u | tee /tmp/reqs.txt
+      
+      echo ""
+      echo "=== Requirements in design docs ==="
+      grep -rhoP 'REQ-\d{4}' docs/design/ | sort -u | tee /tmp/design_refs.txt
+      
+      echo ""
+      echo "=== Requirements in tests ==="
+      grep -rhoP 'REQ-\d{4}' tests/ | sort -u | tee /tmp/test_refs.txt
+      
+      echo ""
+      echo "=== Traceability Check ==="
+      
+      # Check for requirements missing from design
+      missing_design=$(comm -23 /tmp/reqs.txt /tmp/design_refs.txt)
+      if [ -n "$missing_design" ]; then
+        echo "ERROR: Requirements missing design coverage:"
+        echo "$missing_design"
+        exit 1
+      fi
+      
+      # Check for requirements missing from tests
+      missing_tests=$(comm -23 /tmp/reqs.txt /tmp/test_refs.txt)
+      if [ -n "$missing_tests" ]; then
+        echo "ERROR: Requirements missing test coverage:"
+        echo "$missing_tests"
+        exit 1
+      fi
+      
+      echo "✓ All requirements have design and test coverage!"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+traceability:matrix:
+  stage: traceability
+  image: python:3.11-slim
+  needs: ["test:gcc"]
+  script:
+    - |
+      echo "# Traceability Matrix" > traceability-matrix.md
+      echo "" >> traceability-matrix.md
+      echo "| Requirement | Design | Tests |" >> traceability-matrix.md
+      echo "|-------------|--------|-------|" >> traceability-matrix.md
+      
+      for req in $(grep -rhoP 'REQ-\d{4}' docs/requirements/ | sort -u); do
+        design_files=$(grep -rl "$req" docs/design/ 2>/dev/null | xargs -I{} basename {} | tr '\n' ', ' | sed 's/,$//')
+        test_files=$(grep -rl "$req" tests/ 2>/dev/null | xargs -I{} basename {} | tr '\n' ', ' | sed 's/,$//')
+        echo "| $req | ${design_files:-❌} | ${test_files:-❌} |" >> traceability-matrix.md
+      done
+      
+      cat traceability-matrix.md
+  artifacts:
+    paths:
+      - traceability-matrix.md
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# ============================================================================
+# PACKAGE STAGE - Create artifacts
+# ============================================================================
+
+package:
+  stage: package
+  image: gcc:13
+  needs: ["test:gcc", "traceability:check"]
+  before_script:
+    - apt-get update && apt-get install -y cmake
+  script:
+    - cmake --preset release
+    - cmake --build --preset release
+    - cmake --install build/release --prefix install/
+    - tar -czvf mathutils-$CI_COMMIT_SHORT_SHA.tar.gz -C install .
+  artifacts:
+    paths:
+      - mathutils-*.tar.gz
+    expire_in: 1 month
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+# ============================================================================
+# MERGE REQUEST PIPELINE
+# ============================================================================
+
+# Summary job for merge request status
+mr:summary:
+  stage: package
+  image: alpine:latest
+  needs:
+    - job: test:gcc
+      optional: false
+    - job: test:clang
+      optional: false
+    - job: traceability:check
+      optional: false
+  script:
+    - echo "All checks passed!"
+    - echo "- GCC build and test: ✓"
+    - echo "- Clang build and test: ✓"
+    - echo "- Traceability: ✓"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

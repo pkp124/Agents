@@ -1,0 +1,48 @@
+---
+description: Rules for working with design documents
+globs: docs/design/**
+---
+
+# Design Document Rules
+
+When working in the design directory, follow these rules:
+
+## Format Requirements
+- Use Markdown format for design documents
+- Follow the template in `docs/design/design-template.md`
+- Each design MUST have a unique ID: `DES-XXXX` (4 digits, zero-padded)
+- Filename format: `DES-XXXX-descriptive-name.md`
+
+## Mandatory Sections
+1. **Overview** - What is being built and why
+2. **Goals / Non-goals** - Explicit scope boundaries
+3. **Traces to** - MUST list REQ-xxxx and UC-xxxx references
+4. **Architecture** - Components, boundaries, interfaces
+5. **Test strategy** - How requirements will be verified
+
+## Traceability Requirements
+- MUST include `## Traces to` section with explicit REQ-xxxx references
+- Every design goal must map to at least one requirement
+- No orphan design features (features without requirement backing)
+
+```markdown
+## Traces to
+- Requirements: REQ-0001, REQ-0002, REQ-0003
+- Use cases: UC-0001
+```
+
+## Design Quality Checklist
+- [ ] All requirements referenced in Traces to section
+- [ ] Clear API boundaries and interfaces defined
+- [ ] Failure modes documented
+- [ ] Concurrency/threading model specified (if applicable)
+- [ ] Test strategy covers all referenced requirements
+- [ ] At least one alternative considered
+
+## After Creating/Editing Design Docs
+1. Run: `python tools/traceability/check_traceability.py --docs docs --tests tests`
+2. Request CDR (Critical Design Review) for significant changes
+
+## Related Agents
+- Use `agents/design-author.md` for creating design documents
+- Use `agents/cdr-reviewer.md` for design review

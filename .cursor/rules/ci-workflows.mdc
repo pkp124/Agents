@@ -1,0 +1,57 @@
+---
+description: Rules for CI/CD workflow files
+globs: [".github/workflows/**", "ci/**"]
+---
+
+# CI/CD Workflow Rules
+
+## Core Requirements
+- Traceability check MUST run on every PR and push
+- New tests MUST be added to CI execution
+- Workflows MUST use least-privilege permissions
+
+## GitHub Actions Best Practices
+
+### Permissions
+```yaml
+permissions:
+  contents: read  # Minimum required
+  # Add only what's needed
+```
+
+### Dependency Pinning
+- Pin actions to SHA or specific version
+- Pin dependency versions in requirements files
+- Use dependabot or renovate for updates
+
+### Security
+- Never expose secrets in logs
+- Use `${{ secrets.TOKEN }}` not inline values
+- Audit third-party actions before use
+
+## Required CI Jobs
+1. **Linting**: ruff, clang-format, etc.
+2. **Tests**: pytest, GoogleTest, etc.
+3. **Traceability**: `python tools/traceability/check_traceability.py`
+
+## Quality Gates
+- All jobs must pass before merge
+- No bypass of traceability check
+- Coverage should not decrease
+
+## When Modifying CI
+1. Test workflow changes in a branch first
+2. Document any new environment requirements
+3. Ensure matrix covers all supported platforms
+4. Consider caching for performance
+
+## Checklist for CI Changes
+- [ ] New tests are executed in CI
+- [ ] Traceability check runs and passes
+- [ ] Permissions are minimal
+- [ ] Timeouts are reasonable
+- [ ] Caching is correct (no poisoning risk)
+- [ ] Matrix covers required OS/toolchains
+
+## Related Agents
+- Use `agents/ci-impact-reviewer.md` for CI change review

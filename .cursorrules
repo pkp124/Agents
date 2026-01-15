@@ -1,0 +1,108 @@
+# Cursor Rules: TDD + V-Model Development Practices
+
+## Project Overview
+This repository enforces Test-Driven Development (TDD) and V-model development practices with bidirectional traceability. All code changes must be traceable from requirements through design to tests.
+
+## Core Principles
+
+### 1. Requirements-First Development
+- Every feature MUST start with a requirement in `docs/requirements/` (REQ-xxxx)
+- Requirements MUST be verifiable with explicit verification methods
+- Use the YAML format defined in `docs/requirements/requirements-template.yaml`
+
+### 2. Test-Driven Development (TDD)
+- Write tests BEFORE implementation code (Red → Green → Refactor)
+- Every test MUST reference at least one requirement ID (REQ-xxxx)
+- Tests must be deterministic, hermetic, and fast
+- Prefer behavioral assertions over implementation details
+
+### 3. Traceability Requirements
+- Every REQ-xxxx MUST have at least one design reference in `docs/design/`
+- Every REQ-xxxx MUST have at least one test reference in `tests/`
+- Design docs MUST include a "Traces to:" section listing requirements
+- Test files MUST include REQ-xxxx in comments or docstrings
+
+### 4. V-Model Phase Gates
+- Requirements → Design → Implementation → Unit Test → Integration Test → System Test
+- Each phase validates the corresponding specification phase
+- No phase can be skipped without explicit justification
+
+## ID Conventions (Mandatory)
+- Requirements: `REQ-0001`, `REQ-0002`, ...
+- Use Cases: `UC-0001`, `UC-0002`, ...
+- Design Items: `DES-0001`, `DES-0002`, ...
+- Tests (optional): `TST-0001`, `TST-0002`, ...
+
+## File Organization
+```
+docs/
+  product/        # PRDs, user goals (what to build)
+  requirements/   # Verifiable requirements (REQ-xxxx) - YAML
+  use_cases/      # Use cases (UC-xxxx) - Markdown
+  design/         # Design specs (DES-xxxx) - Markdown
+  verification/   # Verification plans - YAML
+  test_plans/     # Test plans - YAML
+  traceability/   # Traceability reports
+  reviews/        # Review checklists
+  user/           # User-facing documentation
+
+src/              # Production source code
+tests/            # All tests (unit/integration/system)
+tools/            # Repository tooling
+agents/           # Agent prompt playbooks
+```
+
+## Agent Selection Guide
+When working on this codebase, use the appropriate agent:
+
+| Task | Agent |
+|------|-------|
+| New feature requirements | `requirements-author.md` |
+| Review requirements | `requirements-reviewer.md` |
+| Write use cases | `use-case-author.md` |
+| Create design doc | `design-author.md` |
+| Review design | `cdr-reviewer.md` |
+| TDD workflow | `tdd-coach.md` |
+| Generate tests | `test-generator.md` |
+| Review tests | `test-reviewer.md` |
+| Fix traceability | `traceability-manager.md` |
+| C++ quality | `cpp-quality-enforcer.md` |
+| Python quality | `python-quality-enforcer.md` |
+| CI changes | `ci-impact-reviewer.md` |
+| Doc updates | `doc-change-manager.md` |
+| User doc review | `user-doc-reviewer.md` |
+
+## Before Committing
+1. Run traceability check: `python tools/traceability/check_traceability.py --docs docs --tests tests`
+2. Run linting: `ruff check . && ruff format --check .`
+3. Run tests: `pytest`
+4. Ensure all new requirements have design and test coverage
+
+## Code Style
+- Python: Follow ruff rules (pyproject.toml)
+- C++: Follow cpp-quality-enforcer.md conventions
+- All code must be type-annotated (Python) or use modern C++ idioms
+
+## Common Workflows
+
+### Adding a New Feature
+1. Create requirement: `docs/requirements/REQ-XXXX-feature-name.yaml`
+2. Write use case (if needed): `docs/use_cases/UC-XXXX.md`
+3. Create design doc: `docs/design/DES-XXXX-feature-name.md`
+4. Write failing tests (TDD): `tests/test_feature.py` (include REQ-xxxx)
+5. Implement minimal code to pass tests
+6. Refactor while keeping tests green
+7. Run traceability check
+
+### Fixing a Bug
+1. Identify affected requirement (REQ-xxxx)
+2. Write failing test that reproduces the bug
+3. Fix the bug (minimal change)
+4. Verify all tests pass
+5. Update documentation if behavior changed
+
+### Reviewing Code
+1. Check traceability (requirement → design → test)
+2. Verify tests cover the requirements
+3. Run appropriate reviewer agent (CDR, test, requirements)
+4. Ensure CI checks pass
