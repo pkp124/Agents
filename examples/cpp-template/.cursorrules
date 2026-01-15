@@ -1,0 +1,78 @@
+# Cursor Rules: MathUtils C++ Project
+
+## Project Overview
+MathUtils is a C++17 library demonstrating TDD + V-model development with full traceability.
+
+## TDD Workflow
+1. **Red**: Write failing test first (include REQ-xxxx reference)
+2. **Green**: Implement minimal code to pass
+3. **Refactor**: Improve while keeping tests green
+
+## Traceability Rules
+- Every test MUST reference REQ-xxxx in comments or docstrings
+- Every design doc MUST have "Traces to:" section
+- Run traceability check before committing
+
+## Requirements IDs
+Current requirements: REQ-0001 through REQ-0005
+See `docs/requirements/REQ-0001-math-operations.yaml`
+
+## Code Style
+- C++17 standard
+- Use `[[nodiscard]]` for functions with important return values
+- Use `noexcept` where exceptions are not thrown
+- Use `std::optional` for values that may not exist
+- Prefer static methods for stateless operations
+
+## Build Commands
+```bash
+# Development workflow
+cmake --workflow --preset dev
+
+# Just build
+cmake --preset debug && cmake --build --preset debug
+
+# Just test
+ctest --preset debug
+```
+
+## Adding New Functionality
+
+### 1. Add Requirement
+Edit `docs/requirements/REQ-0001-math-operations.yaml`:
+```yaml
+- id: "REQ-0006"
+  title: "New Feature"
+  statement: "The system shall ..."
+  verification_method: "Test"
+  priority: "Must"
+```
+
+### 2. Update Design
+Edit `docs/design/DES-0001-mathutils-library.md`:
+- Add to "Traces to:" section
+- Document the design
+
+### 3. Write Failing Test (TDD Red)
+```cpp
+/**
+ * Test new feature
+ * REQ-0006: New feature description
+ */
+int test_new_feature() {
+    // Test that fails initially
+    return 0;
+}
+```
+
+### 4. Implement (TDD Green)
+Add minimal implementation to pass the test.
+
+### 5. Refactor
+Improve code quality while keeping tests green.
+
+## Agent Usage
+- New requirement: `agents/requirements-author.md`
+- Design: `agents/design-author.md`
+- TDD: `agents/tdd-coach.md`
+- C++ review: `agents/cpp-quality-enforcer.md`
