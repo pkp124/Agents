@@ -10,6 +10,47 @@ Use this orchestrator when:
 - Need end-to-end workflow guidance
 - Coordinating multiple development phases
 
+## Agent Catalog by Role
+
+### 🎯 Requirements Engineering
+| Agent | Purpose |
+|-------|---------|
+| `requirements-author.md` | Full RE lifecycle: elicitation, analysis, specification, validation, management |
+| `requirements-reviewer.md` | Review requirements for quality (verifiable, unambiguous, complete) |
+| `use-case-author.md` | Create use cases and user scenarios |
+
+### 🏗️ Architecture & Design
+| Agent | Purpose |
+|-------|---------|
+| `senior-architect.md` | System-level architecture, cross-cutting concerns, ADRs, mentoring |
+| `design-author.md` | Create detailed design documents with traceability |
+| `cdr-reviewer.md` | Critical Design Review checklist and approval |
+
+### 🧪 Testing & Coverage
+| Agent | Purpose |
+|-------|---------|
+| `tdd-coach.md` | Guide TDD workflow (Red → Green → Refactor) |
+| `test-generator.md` | Generate tests from requirements and design |
+| `test-reviewer.md` | Review test quality (determinism, value, coverage) |
+| `test-coverage-analyst.md` | Analyze coverage gaps, risk-based testing, coverage strategy |
+
+### 📋 Reviews & Quality
+| Agent | Purpose |
+|-------|---------|
+| `review-coordinator.md` | Orchestrate multi-artifact reviews, manage findings |
+| `python-quality-enforcer.md` | Python code quality and conventions |
+| `cpp-quality-enforcer.md` | C++ code quality and conventions |
+
+### 🔗 Traceability & Documentation
+| Agent | Purpose |
+|-------|---------|
+| `traceability-manager.md` | REQ↔DES↔TEST links, impact analysis, gap reports |
+| `doc-change-manager.md` | Keep documentation synchronized with code |
+| `user-doc-reviewer.md` | Review user-facing documentation quality |
+| `ci-impact-reviewer.md` | Review CI/CD changes and test integration |
+
+---
+
 ## Development Phases and Agent Mapping
 
 ### Phase 1: Requirements (V-Model Left Side - Top)
@@ -19,7 +60,7 @@ PRD/User Story → Requirements → Use Cases
 
 | Step | Agent | Output |
 |------|-------|--------|
-| Capture user needs | `requirements-author.md` | REQ-xxxx in YAML |
+| Elicit & analyze needs | `requirements-author.md` | Stakeholder analysis, REQ-xxxx in YAML |
 | Review requirements | `requirements-reviewer.md` | Approval or feedback |
 | Define use cases | `use-case-author.md` | UC-xxxx documents |
 
@@ -30,6 +71,7 @@ Requirements → Design Specification → Architecture
 
 | Step | Agent | Output |
 |------|-------|--------|
+| Architecture decisions | `senior-architect.md` | ADRs, architecture guidance |
 | Create design | `design-author.md` | DES-xxxx documents |
 | Critical review | `cdr-reviewer.md` | CDR decision + findings |
 | Verify traceability | `traceability-manager.md` | Gap report + fixes |
@@ -54,10 +96,23 @@ Unit Tests → Integration Tests → System Tests → Acceptance
 | Step | Agent | Output |
 |------|-------|--------|
 | Review tests | `test-reviewer.md` | Test quality assessment |
+| Analyze coverage | `test-coverage-analyst.md` | Coverage gaps, risk-based priorities |
 | Verify traceability | `traceability-manager.md` | Complete trace matrix |
 | CI integration | `ci-impact-reviewer.md` | CI validation |
 
-### Phase 5: Documentation & Release
+### Phase 5: Reviews & Gates
+```
+Requirements Review → CDR → Code Review → Test Review → Doc Review
+```
+
+| Step | Agent | Output |
+|------|-------|--------|
+| Coordinate reviews | `review-coordinator.md` | Review plan, findings tracking |
+| Requirements gate | `requirements-reviewer.md` | Approval to proceed to design |
+| Design gate (CDR) | `cdr-reviewer.md` + `senior-architect.md` | Approval to implement |
+| Code/test gate | `test-reviewer.md` + quality enforcers | Approval to merge |
+
+### Phase 6: Documentation & Release
 ```
 User Docs → Release Notes → Deployment
 ```
@@ -66,6 +121,7 @@ User Docs → Release Notes → Deployment
 |------|-------|--------|
 | Update docs | `doc-change-manager.md` | Doc sync verification |
 | Review user docs | `user-doc-reviewer.md` | Doc quality check |
+| Final traceability | `traceability-manager.md` | Release traceability report |
 
 ## Workflow Templates
 

@@ -14,42 +14,43 @@ These files are **role-focused prompt playbooks** designed for AI coding assista
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      ORCHESTRATOR                                │
-│                    (orchestrator.md)                            │
-│         Coordinates workflow, selects sub-agents                │
+│                       ORCHESTRATOR                               │
+│                    (orchestrator.md)                             │
+│          Coordinates workflow, selects sub-agents                │
 └─────────────────────────────────────────────────────────────────┘
                               │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-┌───────────────┐     ┌───────────────┐     ┌───────────────┐
-│  REQUIREMENTS │     │    DESIGN     │     │ IMPLEMENTATION│
-│    PHASE      │     │    PHASE      │     │    PHASE      │
-├───────────────┤     ├───────────────┤     ├───────────────┤
-│ requirements- │     │ design-       │     │ tdd-coach     │
-│   author      │     │   author      │     │ test-generator│
-│ requirements- │     │ cdr-reviewer  │     │ test-reviewer │
-│   reviewer    │     │               │     │ cpp-quality-  │
-│ use-case-     │     │               │     │   enforcer    │
-│   author      │     │               │     │ python-quality│
-│               │     │               │     │   -enforcer   │
-└───────────────┘     └───────────────┘     └───────────────┘
-        │                     │                     │
-        └─────────────────────┼─────────────────────┘
+    ┌─────────────────────────┼─────────────────────────┐
+    │                         │                         │
+    ▼                         ▼                         ▼
+┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
+│  REQUIREMENTS   │   │    DESIGN &     │   │ IMPLEMENTATION  │
+│   ENGINEERING   │   │  ARCHITECTURE   │   │   & TESTING     │
+├─────────────────┤   ├─────────────────┤   ├─────────────────┤
+│ requirements-   │   │ senior-         │   │ tdd-coach       │
+│   author ⭐     │   │   architect ⭐  │   │ test-generator  │
+│ requirements-   │   │ design-author   │   │ test-reviewer   │
+│   reviewer      │   │ cdr-reviewer    │   │ test-coverage-  │
+│ use-case-author │   │                 │   │   analyst ⭐    │
+│                 │   │                 │   │ python-quality- │
+│                 │   │                 │   │   enforcer      │
+│                 │   │                 │   │ cpp-quality-    │
+│                 │   │                 │   │   enforcer      │
+└─────────────────┘   └─────────────────┘   └─────────────────┘
+    │                         │                         │
+    └─────────────────────────┼─────────────────────────┘
                               │
                               ▼
-                    ┌───────────────┐
-                    │ CROSS-CUTTING │
-                    ├───────────────┤
-                    │ traceability- │
-                    │   manager     │
-                    │ ci-impact-    │
-                    │   reviewer    │
-                    │ doc-change-   │
-                    │   manager     │
-                    │ user-doc-     │
-                    │   reviewer    │
-                    └───────────────┘
+              ┌───────────────────────────────┐
+              │        CROSS-CUTTING          │
+              ├───────────────────────────────┤
+              │ review-coordinator ⭐         │
+              │ traceability-manager (enhanced)│
+              │ ci-impact-reviewer            │
+              │ doc-change-manager            │
+              │ user-doc-reviewer             │
+              └───────────────────────────────┘
+
+⭐ = New or significantly enhanced agent
 ```
 
 ## Agent Catalog
@@ -59,35 +60,48 @@ These files are **role-focused prompt playbooks** designed for AI coding assista
 |-------|---------|
 | `orchestrator.md` | Coordinates workflow, selects sub-agents, manages phases |
 
-### Requirements Phase
+### Requirements Engineering
 | Agent | Purpose |
 |-------|---------|
-| `requirements-author.md` | Creates verifiable requirements (REQ-xxxx) |
-| `requirements-reviewer.md` | Reviews requirements for quality |
-| `use-case-author.md` | Writes use cases (UC-xxxx) |
+| `requirements-author.md` ⭐ | **Full RE lifecycle**: elicitation, analysis, specification, validation, management |
+| `requirements-reviewer.md` | Reviews requirements for quality (verifiable, unambiguous, complete) |
+| `use-case-author.md` | Writes use cases (UC-xxxx) and user scenarios |
 
-### Design Phase
+### Architecture & Design
 | Agent | Purpose |
 |-------|---------|
-| `design-author.md` | Creates design documents (DES-xxxx) |
+| `senior-architect.md` ⭐ | **System-level architecture**: cross-cutting concerns, ADRs, patterns, mentoring |
+| `design-author.md` | Creates detailed design documents (DES-xxxx) |
 | `cdr-reviewer.md` | Runs Critical Design Review |
 
-### Implementation Phase
+### Testing & Coverage
 | Agent | Purpose |
 |-------|---------|
 | `tdd-coach.md` | Guides TDD workflow (red→green→refactor) |
 | `test-generator.md` | Generates tests from requirements |
-| `test-reviewer.md` | Reviews test quality |
-| `cpp-quality-enforcer.md` | C++ code quality review |
-| `python-quality-enforcer.md` | Python code quality review |
+| `test-reviewer.md` | Reviews test quality (determinism, value, traceability) |
+| `test-coverage-analyst.md` ⭐ | **Coverage strategy**: gap analysis, risk-based testing, coverage reports |
 
-### Cross-Cutting
+### Code Quality
 | Agent | Purpose |
 |-------|---------|
-| `traceability-manager.md` | Maintains REQ↔DES↔TEST links |
+| `cpp-quality-enforcer.md` | C++ code quality and conventions |
+| `python-quality-enforcer.md` | Python code quality and conventions |
+
+### Reviews & Coordination
+| Agent | Purpose |
+|-------|---------|
+| `review-coordinator.md` ⭐ | **Unified review process**: orchestrates reviews, manages findings, tracks approval |
+
+### Traceability & Documentation
+| Agent | Purpose |
+|-------|---------|
+| `traceability-manager.md` ⭐ | REQ↔DES↔TEST links, **impact analysis**, gap reports |
 | `ci-impact-reviewer.md` | Reviews CI/CD changes |
 | `doc-change-manager.md` | Keeps docs in sync with code |
 | `user-doc-reviewer.md` | Reviews user documentation |
+
+**⭐ = New or significantly enhanced in latest update**
 
 ## Agent Composition Patterns
 
