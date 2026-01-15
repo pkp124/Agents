@@ -1,0 +1,22 @@
+schema_version: 1
+feature: "<Feature/Subsystem>"
+
+context:
+  summary: "Describe the problem, scope, and system boundaries."
+  stakeholders: []
+
+definitions:
+  - term: "<term>"
+    definition: "<definition>"
+    unit: "<optional unit>"
+
+requirements:
+  - id: "REQ-XXXX"
+    title: "<short title>"
+    statement: "The system shall ..."
+    rationale: "<why it exists>"
+    verification_method: "Test" # Test|Analysis|Inspection|Demonstration
+    priority: "Must" # Must|Should|Could
+    derived_from: [] # optional: UC-xxxx, PRD section, etc.
+    notes: ""
+

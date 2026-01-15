@@ -1,0 +1,20 @@
+schema_version: 1
+system: "Repo tooling"
+
+verification_plan:
+  - requirement_id: "REQ-0001"
+    verification_method: "Test"
+    design_refs: ["DES-0001-traceability-checker.md"]
+    planned_tests:
+      - id: "TST-0001"
+        level: "unit"
+        description: "Checker produces missing/unknown requirement reports."
+        location_hint: "tests/test_traceability_checker.py"
+      - id: "TST-0002"
+        level: "system"
+        description: "Repo passes traceability check for REQ-0001."
+        location_hint: "tests/test_traceability_example.py"
+    acceptance_criteria:
+      - "CI runs traceability check and fails on missing REQ↔DES or REQ↔TEST links."
+    notes: ""
+

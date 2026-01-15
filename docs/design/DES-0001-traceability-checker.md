@@ -17,7 +17,7 @@ Provide a lightweight repository tool that enforces traceability between require
 ## Architecture
 `tools/traceability/check_traceability.py` scans:
 
-- `docs/requirements/**` to establish the set of known requirement IDs.
+- `docs/requirements/**` (**YAML**) to establish the set of known requirement IDs.
 - `docs/design/**` to find references to known requirement IDs.
 - `tests/**` to find references to known requirement IDs.
 

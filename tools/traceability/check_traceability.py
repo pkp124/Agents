@@ -41,7 +41,7 @@ def _read_text(path: Path) -> str:
 
 def collect_req_ids_defined(requirements_dir: Path) -> set[str]:
     ids: set[str] = set()
-    for p in _iter_files(requirements_dir, include_suffixes={".md", ".txt", ".rst"}):
+    for p in _iter_files(requirements_dir, include_suffixes={".yml", ".yaml"}):
         ids.update(REQ_ID_RE.findall(_read_text(p)))
     return ids
 

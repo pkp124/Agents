@@ -19,8 +19,8 @@ This document defines **recommended file locations, naming, and required section
 ## File naming conventions
 
 ### Requirements
-- **Path**: `docs/requirements/REQ-0001-<slug>.md`
-- **Example**: `docs/requirements/REQ-0042-rate-limiter.md`
+- **Path**: `docs/requirements/REQ-0001-<slug>.yaml` (or `.yml`)
+- **Example**: `docs/requirements/REQ-0042-rate-limiter.yaml`
 
 ### Use cases
 - **Path**: `docs/use_cases/UC-0001-<slug>.md`
@@ -39,18 +39,23 @@ Each test file should contain the requirement IDs it verifies (e.g. `REQ-0042`) 
 
 ## Required content format (recommended)
 
-### Requirement document (`REQ-xxxx-*.md`)
+### Requirement document (`REQ-xxxx-*.yml` / `REQ-xxxx-*.yaml`)
 
-Minimum required sections:
+Minimum required fields (recommended schema):
 
-- **Context**
-- **Definitions** (terms, units)
-- **Requirements** (each with ID and verifiability)
-- **Verification** method per requirement (Test/Analysis/Inspection/Demonstration)
-- **Out of scope**
-- **Open questions**
+- `schema_version`
+- `feature`
+- `context`
+- `definitions`
+- `requirements[]` with:
+  - `id` (`REQ-xxxx`)
+  - `title`
+  - `statement` (“shall”)
+  - `rationale`
+  - `verification_method`
+  - `priority`
 
-Use `docs/requirements/requirements-template.md` as the starting point.
+Use `docs/requirements/requirements-template.yaml` as the starting point.
 
 ### Use case document (`UC-xxxx-*.md`)
 
@@ -73,7 +78,7 @@ Minimum required sections:
 - **Traces to** (explicit list of `REQ-xxxx` and optionally `UC-xxxx`)
 - Architecture (components, boundaries, interfaces)
 - Invariants / failure modes
-- Test strategy (what proves each `REQ-xxxx`)
+- Test strategy (or reference to a `docs/test_strategy/*.md` document)
 - Alternatives considered
 
 Use `docs/design/design-template.md`.
@@ -116,4 +121,9 @@ Generate a simple matrix report:
 ```bash
 python3 tools/traceability/generate_matrix.py --docs docs --tests tests --output docs/traceability/traceability-matrix.md
 ```
+
+### Verification and test plans (YAML)
+
+- Verification plans: `docs/verification/*.yaml`
+- Test plans: `docs/test_plans/*.yaml`
 

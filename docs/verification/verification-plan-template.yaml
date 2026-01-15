@@ -1,0 +1,15 @@
+schema_version: 1
+system: "<System/Subsystem>"
+
+verification_plan:
+  - requirement_id: "REQ-XXXX"
+    verification_method: "Test" # Test|Analysis|Inspection|Demonstration
+    design_refs: ["DES-XXXX"] # optional: design IDs or doc refs
+    planned_tests:
+      - id: "TST-XXXX" # optional
+        level: "unit" # unit|integration|system
+        description: "<what this test proves>"
+        location_hint: "tests/<path>"
+    acceptance_criteria: []
+    notes: ""
+

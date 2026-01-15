@@ -14,7 +14,7 @@ def test_report_flags_missing_design_and_tests(tmp_path: Path) -> None:
     docs = tmp_path / "docs"
     tests = tmp_path / "tests"
 
-    _write(docs / "requirements" / "reqs.md", "### REQ-0001: foo\n")
+    _write(docs / "requirements" / "reqs.yaml", "requirements:\n  - id: REQ-0001\n")
     unknown = "REQ-" + "9999"
     _write(docs / "design" / "d.md", f"Traces to: {unknown}\n")
     _write(tests / "test_x.py", f"# {unknown}\n")
@@ -32,7 +32,7 @@ def test_report_ok_when_req_is_referenced(tmp_path: Path) -> None:
     docs = tmp_path / "docs"
     tests = tmp_path / "tests"
 
-    _write(docs / "requirements" / "reqs.md", "### REQ-0001: foo\n")
+    _write(docs / "requirements" / "reqs.yaml", "requirements:\n  - id: REQ-0001\n")
     _write(docs / "design" / "d.md", "Traces to: REQ-0001\n")
     _write(tests / "test_x.py", "# REQ-0001\n")
 

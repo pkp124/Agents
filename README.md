@@ -61,13 +61,13 @@ See `agents/README.md` for the list of agent roles and how to use them for:
 ## Quick start
 
 - Start with the templates in `docs/**`.
-- Add a requirement in `docs/requirements/`.
+- Add a requirement in `docs/requirements/` (**YAML**).
 - Add a matching design in `docs/design/` that references the requirement.
 - Add tests under `tests/` that reference the requirement ID.
 - Run the traceability check:
 
 ```bash
-python tools/traceability/check_traceability.py --docs docs --tests tests
+python3 tools/traceability/check_traceability.py --docs docs --tests tests
 ```
 
 CI will run the same checks on every PR.
