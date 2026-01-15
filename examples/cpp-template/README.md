@@ -147,12 +147,30 @@ int main() {
 }
 ```
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Getting Started](docs/user/getting-started.md) | Quick start guide with examples |
+| [API Reference](docs/api/reference.md) | Complete API documentation |
+| [Troubleshooting](docs/user/troubleshooting.md) | Common issues and solutions |
+| [Development Workflows](docs/WORKFLOWS.md) | How to add features, fix bugs, write docs |
+
 ## Agent Workflow Example
 
 This project can be developed using the agent orchestration:
 
-1. **New requirement**: Use `requirements-author.md`
-2. **Design**: Use `design-author.md`, then `cdr-reviewer.md`
-3. **Implementation**: Use `tdd-coach.md` + `cpp-quality-enforcer.md`
-4. **Testing**: Use `test-generator.md` + `test-reviewer.md`
-5. **Traceability**: Use `traceability-manager.md`
+| Task | Agent | Output |
+|------|-------|--------|
+| New requirement | `requirements-author.md` | REQ-xxxx in YAML |
+| Design | `design-author.md` | DES-xxxx document |
+| Design review | `cdr-reviewer.md` | CDR approval |
+| TDD | `tdd-coach.md` | Failing test → passing test |
+| Code quality | `cpp-quality-enforcer.md` | Code review |
+| Test generation | `test-generator.md` | Test cases |
+| Test review | `test-reviewer.md` | Test quality check |
+| Traceability | `traceability-manager.md` | Gap report |
+| User docs | `doc-change-manager.md` | Updated docs |
+| API docs | `cpp-quality-enforcer.md` | Doxygen comments |
+
+See [docs/WORKFLOWS.md](docs/WORKFLOWS.md) for detailed workflows.
