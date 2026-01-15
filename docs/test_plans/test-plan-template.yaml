@@ -1,0 +1,21 @@
+schema_version: 1
+feature: "<Feature>"
+
+test_plan:
+  requirement_ids: ["REQ-XXXX"]
+  scope:
+    in_scope: []
+    out_of_scope: []
+  environments:
+    - name: "ci"
+      notes: ""
+  test_inventory:
+    - name: "<test name>"
+      level: "unit" # unit|integration|system
+      requirement_ids: ["REQ-XXXX"]
+      description: "<what it validates>"
+      preconditions: []
+      steps: []
+      expected_results: []
+      notes: ""
+

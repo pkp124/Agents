@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+.mypy_cache/
+.coverage
+htmlcov/

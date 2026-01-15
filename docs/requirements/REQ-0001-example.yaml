@@ -1,0 +1,19 @@
+schema_version: 1
+feature: "Traceability Demonstration"
+
+context:
+  summary: "Minimal example requirement used to demonstrate requirement↔design↔test traceability automation."
+  stakeholders: []
+
+definitions: []
+
+requirements:
+  - id: "REQ-0001"
+    title: "Provide a traceability check command"
+    statement: "The repository shall provide an automated check that verifies requirement traceability to both design and tests."
+    rationale: "Prevents requirements from becoming stale and ensures verification artifacts exist."
+    verification_method: "Test"
+    priority: "Must"
+    derived_from: []
+    notes: ""
+

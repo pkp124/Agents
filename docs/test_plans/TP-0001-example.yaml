@@ -1,0 +1,24 @@
+schema_version: 1
+feature: "Traceability Demonstration"
+
+test_plan:
+  requirement_ids: ["REQ-0001"]
+  scope:
+    in_scope:
+      - "Traceability checker behavior and repo-level traceability enforcement."
+    out_of_scope:
+      - "Enforcing design↔test traceability."
+  environments:
+    - name: "ci"
+      notes: "Runs in GitHub Actions."
+  test_inventory:
+    - name: "test_report_ok_when_req_is_referenced"
+      level: "unit"
+      requirement_ids: ["REQ-0001"]
+      description: "Report is clean when REQ has both design and test refs."
+      preconditions: []
+      steps: []
+      expected_results:
+        - "Report has no missing/unknown sets."
+      notes: "See tests/test_traceability_checker.py"
+
