@@ -103,6 +103,25 @@ These files are **role-focused prompt playbooks** designed for AI coding assista
 
 **⭐ = New or significantly enhanced in latest update**
 
+### Functional Safety (NEW)
+| Agent | Purpose |
+|-------|---------|
+| `safety/hazard-analyst.md` | Hazard identification and risk assessment (HARA) |
+| `safety/fmea-analyst.md` | Failure Mode and Effects Analysis |
+| `safety/fta-analyst.md` | Fault Tree Analysis |
+| `safety/safety-requirements-author.md` | Safety requirements with ASIL/SIL |
+| `safety/safety-case-author.md` | GSN-based safety case development |
+| `safety/safety-verifier.md` | Safety verification and V&V |
+| `safety/safety-orchestrator.md` | Safety development workflow coordination |
+
+### Agentic Design Patterns (NEW)
+| Pattern | Purpose |
+|---------|---------|
+| `patterns/react.md` | Reasoning + Acting loop |
+| `patterns/reflection.md` | Self-critique and improvement |
+| `patterns/planning.md` | Task decomposition |
+| `patterns/multi-agent.md` | Agent collaboration |
+
 ## Agent Composition Patterns
 
 ### Pattern 1: Author → Reviewer Chain
